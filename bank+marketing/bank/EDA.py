@@ -3,23 +3,41 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df = pd.read_csv(r"D:\ML journey 2027\bank+marketing\bank\bank.csv")
-#Step 2: Initial Inspection
-df.shape           # rows, columns
-df.head(10)        # first 10 rows
-df.tail()           
-df.columns
-df.dtypes           # data types of each column
-df.info()           # nulls + dtypes + memory usage
-df.describe()       # stats for numeric columns
-df.describe(include='object')  # stats for categorical columns
+# --- FIX: correct delimiter + strip quotes ---
+df = pd.read_csv(r"D:\ML journey 2027\bank+marketing\bank\bank.csv", sep=';')
+df.columns = [c.strip().replace('"', '') for c in df.columns]
+for c in df.select_dtypes(include='object').columns:
+    df[c] = df[c].str.replace('"', '', regex=False)
 
-#Step 3: Check Missing Values
-df.isnull().sum()
-df.isnull().mean() * 100   # percentage missing per column
+print(df.columns.tolist())  # sanity check — should show 17 clean column names
 
-# Visualize missingness
+# Step 2: Initial Inspection
+print(df.shape)
+print(df.head(10))
+print(df.tail())
+print(df.columns)
+print(df.dtypes)
+df.info()
+print(df.describe())
+print(df.describe(include='object'))
+
+# Step 3: Check Missing Values
+print(df.isnull().sum())
+print(df.isnull().mean() * 100)
+
 plt.figure(figsize=(10,6))
 sns.heatmap(df.isnull(), cbar=False, cmap='viridis')
 plt.title("Missing Value Heatmap")
 plt.show()
+
+# Step 5: Univariate Analysis
+num_cols = ['age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous']
+
+for col in num_cols:
+    fig, axes = plt.subplots(1, 2, figsize=(12,4))
+    sns.histplot(df[col], kde=True, ax=axes[0])
+    axes[0].set_title(f"Distribution of {col}")
+    sns.boxplot(x=df[col], ax=axes[1])
+    axes[1].set_title(f"Boxplot of {col}")
+    plt.tight_layout()
+    plt.show()
