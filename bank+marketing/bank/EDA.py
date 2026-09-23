@@ -13,3 +13,13 @@ df.dtypes           # data types of each column
 df.info()           # nulls + dtypes + memory usage
 df.describe()       # stats for numeric columns
 df.describe(include='object')  # stats for categorical columns
+
+#Step 3: Check Missing Values
+df.isnull().sum()
+df.isnull().mean() * 100   # percentage missing per column
+
+# Visualize missingness
+plt.figure(figsize=(10,6))
+sns.heatmap(df.isnull(), cbar=False, cmap='viridis')
+plt.title("Missing Value Heatmap")
+plt.show()
