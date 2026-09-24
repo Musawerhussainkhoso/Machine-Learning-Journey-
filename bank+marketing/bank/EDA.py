@@ -48,3 +48,12 @@ for col in num_cols:
     lower, upper = Q1 - 1.5*IQR, Q3 + 1.5*IQR
     outliers = df[(df[col] < lower) | (df[col] > upper)]
     print(f"{col}: {len(outliers)} outliers ({len(outliers)/len(df)*100:.1f}%)")
+'''
+Step 7: Handle the pdays Sentinel Value (-1)
+-1 in pdays doesn't mean "negative one day" — it's 
+a placeholder meaning "never contacted before." 
+Left as-is, it will skew your stats and corrupt anything downstream
+ (correlation, regression, etc.):
+'''
+df['was_contacted_before'] = (df['pdays'] != -1).astype(int)
+df['pdays_clean'] = df['pdays'].replace(-1, np.nan)    
