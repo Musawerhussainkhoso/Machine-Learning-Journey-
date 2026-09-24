@@ -82,3 +82,16 @@ for col in cat_cols_no_target:
     plt.title(f"{col} vs y")
     plt.tight_layout()
     plt.show()    
+'''
+Step 9: Multicollinearity Check (VIF)
+Multicollinearity means two or more predictor variables are highly correlated with each 
+other — this is a pernicious (harmful in a gradual, subtle way) problem for regression 
+models because it makes coefficient estimates unstable and hard to interpret.
+'''    
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+X = df[num_cols].dropna()
+vif = pd.DataFrame()
+vif['feature'] = X.columns
+vif['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+print(vif)
