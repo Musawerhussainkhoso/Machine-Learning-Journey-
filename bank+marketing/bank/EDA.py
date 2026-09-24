@@ -95,3 +95,9 @@ vif = pd.DataFrame()
 vif['feature'] = X.columns
 vif['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
 print(vif)
+
+#Step 10: Skewness Check
+from scipy.stats import skew
+
+for col in num_cols:
+    print(f"{col}: skew = {skew(df[col]):.2f}")
