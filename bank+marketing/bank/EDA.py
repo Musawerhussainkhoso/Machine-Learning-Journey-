@@ -65,3 +65,10 @@ plt.figure(figsize=(9,7))
 sns.heatmap(df[num_cols].corr(), annot=True, cmap='coolwarm', fmt='.2f')
 plt.title("Correlation Heatmap")
 plt.show()
+
+#Numeric features vs target y:
+for col in num_cols:
+    plt.figure(figsize=(6,4))
+    sns.boxplot(x='y', y=col, data=df)
+    plt.title(f"{col} vs y")
+    plt.show()
