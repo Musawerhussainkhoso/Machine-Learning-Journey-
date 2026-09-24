@@ -56,4 +56,12 @@ Left as-is, it will skew your stats and corrupt anything downstream
  (correlation, regression, etc.):
 '''
 df['was_contacted_before'] = (df['pdays'] != -1).astype(int)
-df['pdays_clean'] = df['pdays'].replace(-1, np.nan)    
+df['pdays_clean'] = df['pdays'].replace(-1, np.nan)   
+'''
+Step 8: Bivariate / Multivariate Analysis
+Correlation heatmap (numeric features):
+''' 
+plt.figure(figsize=(9,7))
+sns.heatmap(df[num_cols].corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title("Correlation Heatmap")
+plt.show()
