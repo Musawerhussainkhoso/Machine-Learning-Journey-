@@ -111,3 +111,11 @@ This dataset is ~88% "no" / ~12% "yes" — heavily imbalanced. Keep this in mind
 it affects both model choice and evaluation metric (accuracy will lie to you — use precision/recall/F1 
 or AUC instead).
 '''    
+#Step 12: Encode Categorical Variables (final prep for modeling)
+cat_cols_no_target = ['job','marital','education','default','housing','loan','contact','month','poutcome']
+
+df_encoded = pd.get_dummies(df, columns=cat_cols_no_target, drop_first=True)
+df_encoded['y'] = df_encoded['y'].map({'no': 0, 'yes': 1})
+
+print(df_encoded.shape)
+print(df_encoded.head())
