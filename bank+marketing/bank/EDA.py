@@ -72,3 +72,13 @@ for col in num_cols:
     sns.boxplot(x='y', y=col, data=df)
     plt.title(f"{col} vs y")
     plt.show()
+#Categorical features vs target y:
+cat_cols_no_target = ['job','marital','education','default','housing','loan','contact','month','poutcome']
+
+for col in cat_cols_no_target:
+    plt.figure(figsize=(8,4))
+    sns.countplot(x=col, hue='y', data=df)
+    plt.xticks(rotation=45)
+    plt.title(f"{col} vs y")
+    plt.tight_layout()
+    plt.show()    
