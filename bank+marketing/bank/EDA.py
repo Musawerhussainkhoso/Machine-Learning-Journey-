@@ -101,3 +101,13 @@ from scipy.stats import skew
 
 for col in num_cols:
     print(f"{col}: skew = {skew(df[col]):.2f}")
+#Step 11: Target Balance Check
+print(df['y'].value_counts(normalize=True) * 100)
+sns.countplot(x='y', data=df)
+plt.title("Target Class Balance")
+plt.show()
+'''
+This dataset is ~88% "no" / ~12% "yes" — heavily imbalanced. Keep this in mind for later; 
+it affects both model choice and evaluation metric (accuracy will lie to you — use precision/recall/F1 
+or AUC instead).
+'''    
