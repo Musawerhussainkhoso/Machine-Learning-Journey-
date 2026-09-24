@@ -41,3 +41,10 @@ for col in num_cols:
     axes[1].set_title(f"Boxplot of {col}")
     plt.tight_layout()
     plt.show()
+#Step 6: Outlier Detection
+for col in num_cols:
+    Q1, Q3 = df[col].quantile([0.25, 0.75])
+    IQR = Q3 - Q1
+    lower, upper = Q1 - 1.5*IQR, Q3 + 1.5*IQR
+    outliers = df[(df[col] < lower) | (df[col] > upper)]
+    print(f"{col}: {len(outliers)} outliers ({len(outliers)/len(df)*100:.1f}%)")
