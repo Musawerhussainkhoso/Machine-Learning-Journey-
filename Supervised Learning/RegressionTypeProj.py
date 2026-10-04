@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,8 +10,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 # Load the Excel dataset
-data = pd.read_excel('insurance_80_percent_train.xlsx')
-
+file_path = os.path.join(os.path.dirname(__file__), 'insurance_80_percent_train.xlsx')
+data = pd.read_excel(file_path)
 print(data.head())
 print(data.tail())
 print(data.info())
