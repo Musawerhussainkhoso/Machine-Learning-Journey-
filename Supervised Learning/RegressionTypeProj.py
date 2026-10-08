@@ -45,6 +45,36 @@ for ax, col in zip(axes, num_features):
 plt.tight_layout()#graphs ke labels ko aapas mein overlap hone se bachata hai.
 plt.show()
 
+# get_dummies se PEHLE chalayein (jab sex, smoker, region text mein hon)
+cat_features = ['sex', 'smoker', 'region']
+palettes = ['Set2', 'Set1', 'viridis']
+
+sns.set_style('whitegrid')
+fig, axes = plt.subplots(1, 3, figsize=(20, 6))
+
+for ax, col, pal in zip(axes, cat_features, palettes):
+
+    # Scatter points (category ke ird-gird phaile hue)
+    sns.stripplot(
+        data=data, x=col, y='charges',
+        hue=col, palette=pal, legend=False,
+        jitter=0.25, alpha=0.6, size=5, ax=ax
+    )
+
+    # Har category ka average bade kaale diamond se
+    sns.pointplot(
+        data=data, x=col, y='charges',
+        linestyle='none', color='black', marker='D',
+        errorbar=None, ax=ax
+    )
+
+    ax.set_title(f'{col} vs charges', fontsize=14, fontweight='bold')
+    ax.set_xlabel(col, fontsize=12)
+    ax.set_ylabel('Charges', fontsize=12)
+
+plt.tight_layout()
+plt.show()
+
 # 3. Encode Categorical Features
 
 data = pd.get_dummies(
@@ -79,3 +109,8 @@ scores = cross_val_score(
 print("R² Scores:", scores)
 print("Mean R²:", scores.mean())
 print("Standard Deviation:", scores.std())
+
+# 6. Train/Test Split (20% test alag rakh liya)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
