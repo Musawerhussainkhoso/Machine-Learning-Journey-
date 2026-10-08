@@ -117,3 +117,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 model.fit(X_train, y_train)#fit() model ko train karta hai; ye test data par prediction nahi karta.
 y_pred = model.predict(X_test)#Trained model ko naye input features do aur usse predictions lo.
+print("Test R²:", r2_score(y_test, y_pred))
+
+print(
+    "Test MSE:",
+    mean_squared_error(y_test, y_pred)
+)
