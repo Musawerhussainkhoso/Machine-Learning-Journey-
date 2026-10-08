@@ -20,7 +20,7 @@ data = pd.read_excel(file_path)
 
 print(data.head())
 print(data.tail())
-print(data.info())
+data.info()
 
 # 2. Visualize Numerical Features
 
@@ -52,17 +52,18 @@ palettes = ['Set2', 'Set1', 'viridis']
 sns.set_style('whitegrid')
 fig, axes = plt.subplots(1, 3, figsize=(20, 6))
 
-for ax, col, pal in zip(axes, cat_features, palettes):
+for ax, col, pal in zip(axes, cat_features, palettes):# zip() teen lists ko jod kar har round mein ek ek item deta hai: (graph, column, rang ka set)
+
 
     # Scatter points (category ke ird-gird phaile hue)
-    sns.stripplot(
+    sns.stripplot(# Individual observations
         data=data, x=col, y='charges',
         hue=col, palette=pal, legend=False,
         jitter=0.25, alpha=0.6, size=5, ax=ax
     )
 
-    # Har category ka average bade kaale diamond se
-    sns.pointplot(
+    #Average charges
+    sns.pointplot(#Ye har category ke average charges ko black diamond ke saath show karta hai.
         data=data, x=col, y='charges',
         linestyle='none', color='black', marker='D',
         errorbar=None, ax=ax
@@ -114,3 +115,5 @@ print("Standard Deviation:", scores.std())
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
+model.fit(X_train, y_train)#fit() model ko train karta hai; ye test data par prediction nahi karta.
+y_pred = model.predict(X_test)#Trained model ko naye input features do aur usse predictions lo.
