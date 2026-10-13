@@ -26,7 +26,7 @@ print("\nMissing values in training data:")
 print(read_data_train.isnull().sum().sort_values(ascending=False))
 print("\nMissing values in test data:")
 print(read_data_test.isnull().sum().sort_values(ascending=False))
-
+'''
 # Step: Drop the four columns with too many missing values
 heavy = ['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']
 
@@ -37,3 +37,14 @@ read_data_test = read_data_test.drop(columns=heavy)
 print("Train shape:", read_data_train.shape)
 print("Test shape:", read_data_test.shape)
 print(read_data_train.columns.tolist())
+
+'''
+# Step: Fill missing values with median 
+num_cols = read_data_train.select_dtypes(include='number').columns
+
+for c in num_cols:
+    med = read_data_train[c].median()   # median sirf TRAIN se
+    read_data_train[c] = read_data_train[c].fillna(med)
+    read_data_test[c] = read_data_test[c].fillna(med)
+
+print(read_data_train[['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']].isnull().sum())
