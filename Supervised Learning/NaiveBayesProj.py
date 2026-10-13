@@ -53,3 +53,11 @@ print(read_data_train[['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']].isnul
 read_data_train = read_data_train.dropna(subset=['RainTomorrow'])
 read_data_test = read_data_test.dropna(subset=['RainTomorrow'])
 
+# Step: Fill missing text columns with the mode (most common value, from TRAIN only)
+cat_cols = read_data_train.select_dtypes(exclude='number').columns
+cat_cols = cat_cols.drop(['Date', 'Location', 'RainTomorrow'])   # these need no filling
+
+for c in cat_cols:
+    mode = read_data_train[c].mode()[0]
+    read_data_train[c] = read_data_train[c].fillna(mode)
+    read_data_test[c] = read_data_test[c].fillna(mode)
