@@ -26,3 +26,14 @@ print("\nMissing values in training data:")
 print(read_data_train.isnull().sum().sort_values(ascending=False))
 print("\nMissing values in test data:")
 print(read_data_test.isnull().sum().sort_values(ascending=False))
+
+# Step: Drop the four columns with too many missing values
+heavy = ['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']
+
+read_data_train = read_data_train.drop(columns=heavy)
+read_data_test = read_data_test.drop(columns=heavy)
+
+# Check: these columns should no longer exist
+print("Train shape:", read_data_train.shape)
+print("Test shape:", read_data_test.shape)
+print(read_data_train.columns.tolist())
