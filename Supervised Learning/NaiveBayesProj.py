@@ -48,3 +48,7 @@ for c in num_cols:
     read_data_test[c] = read_data_test[c].fillna(med)
 
 print(read_data_train[['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']].isnull().sum())
+
+# Step: Drop rows where the target (RainTomorrow) is missing
+read_data_train = read_data_train.dropna(subset=['RainTomorrow'])
+read_data_test = read_data_test.dropna(subset=['RainTomorrow'])
