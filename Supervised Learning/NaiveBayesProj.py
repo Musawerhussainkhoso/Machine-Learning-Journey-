@@ -52,3 +52,4 @@ print(read_data_train[['Sunshine', 'Evaporation', 'Cloud9am', 'Cloud3pm']].isnul
 # Step: Drop rows where the target (RainTomorrow) is missing
 read_data_train = read_data_train.dropna(subset=['RainTomorrow'])
 read_data_test = read_data_test.dropna(subset=['RainTomorrow'])
+
