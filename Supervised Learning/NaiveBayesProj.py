@@ -1,5 +1,7 @@
 import os 
 import pandas as pd
+from sklearn.naive_bayes import GaussianNB
+
 
 file_path = os.path.join(
     os.path.dirname(__file__),
@@ -93,3 +95,16 @@ X_train = read_data_train.drop(columns=['RainTomorrow'])
 y_train = read_data_train['RainTomorrow']
 X_test = read_data_test.drop(columns=['RainTomorrow'])
 y_test = read_data_test['RainTomorrow']
+
+#train naive bayes model
+model = GaussianNB()
+model.fit(X_train, y_train)
+# predict on test data
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+y_pred = model.predict(X_test)
+
+# show results
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
