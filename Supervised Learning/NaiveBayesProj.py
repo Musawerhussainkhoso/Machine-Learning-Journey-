@@ -83,3 +83,7 @@ print("Missing (test):", read_data_test.isnull().sum().sum())
 text_cols = ['Location', 'WindGustDir', 'WindDir9am', 'WindDir3pm']
 read_data_train = pd.get_dummies(read_data_train, columns=text_cols, dtype=int)
 read_data_test = pd.get_dummies(read_data_test, columns=text_cols, dtype=int)
+
+# make test columns same as train columns
+read_data_test = read_data_test.reindex(columns=read_data_train.columns, fill_value=0)
+print("Shapes:", read_data_train.shape, read_data_test.shape)
