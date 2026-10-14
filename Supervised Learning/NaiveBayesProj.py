@@ -65,3 +65,7 @@ for c in cat_cols:
 # convert date to month
 for d in (read_data_train, read_data_test):
     d['Month'] = pd.to_datetime(d['Date']).dt.month
+
+# remove date column
+read_data_train = read_data_train.drop(columns=['Date'])
+read_data_test = read_data_test.drop(columns=['Date'])
