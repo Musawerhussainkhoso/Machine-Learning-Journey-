@@ -78,3 +78,8 @@ for col in ['RainToday', 'RainTomorrow']:
 # check missing values (both should be 0)
 print("Missing (train):", read_data_train.isnull().sum().sum())
 print("Missing (test):", read_data_test.isnull().sum().sum())
+
+# convert text columns to numbers (one-hot encoding)
+text_cols = ['Location', 'WindGustDir', 'WindDir9am', 'WindDir3pm']
+read_data_train = pd.get_dummies(read_data_train, columns=text_cols, dtype=int)
+read_data_test = pd.get_dummies(read_data_test, columns=text_cols, dtype=int)
