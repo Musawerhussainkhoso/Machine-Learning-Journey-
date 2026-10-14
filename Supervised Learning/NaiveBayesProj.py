@@ -74,3 +74,7 @@ read_data_test = read_data_test.drop(columns=['Date'])
 for col in ['RainToday', 'RainTomorrow']:
     read_data_train[col] = read_data_train[col].map({'No': 0, 'Yes': 1})
     read_data_test[col] = read_data_test[col].map({'No': 0, 'Yes': 1})
+
+# check missing values (both should be 0)
+print("Missing (train):", read_data_train.isnull().sum().sum())
+print("Missing (test):", read_data_test.isnull().sum().sum())
