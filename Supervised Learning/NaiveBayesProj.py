@@ -61,3 +61,7 @@ for c in cat_cols:
     mode = read_data_train[c].mode()[0]
     read_data_train[c] = read_data_train[c].fillna(mode)
     read_data_test[c] = read_data_test[c].fillna(mode)
+
+# convert date to month
+for d in (read_data_train, read_data_test):
+    d['Month'] = pd.to_datetime(d['Date']).dt.month
