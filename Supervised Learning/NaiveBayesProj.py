@@ -87,3 +87,9 @@ read_data_test = pd.get_dummies(read_data_test, columns=text_cols, dtype=int)
 # make test columns same as train columns
 read_data_test = read_data_test.reindex(columns=read_data_train.columns, fill_value=0)
 print("Shapes:", read_data_train.shape, read_data_test.shape)
+
+# split data into X (inputs) and y (target)
+X_train = read_data_train.drop(columns=['RainTomorrow'])
+y_train = read_data_train['RainTomorrow']
+X_test = read_data_test.drop(columns=['RainTomorrow'])
+y_test = read_data_test['RainTomorrow']
