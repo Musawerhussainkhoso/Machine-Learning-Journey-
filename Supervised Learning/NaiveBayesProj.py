@@ -69,3 +69,8 @@ for d in (read_data_train, read_data_test):
 # remove date column
 read_data_train = read_data_train.drop(columns=['Date'])
 read_data_test = read_data_test.drop(columns=['Date'])
+
+# convert Yes/No to 1/0
+for col in ['RainToday', 'RainTomorrow']:
+    read_data_train[col] = read_data_train[col].map({'No': 0, 'Yes': 1})
+    read_data_test[col] = read_data_test[col].map({'No': 0, 'Yes': 1})
