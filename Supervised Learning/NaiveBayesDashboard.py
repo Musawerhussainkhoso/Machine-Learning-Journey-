@@ -45,20 +45,24 @@ PLOT = dict(STRETCH, theme=None, config={"displayModeBar": False, "responsive": 
 
 THEMES = {
     "dark": dict(
-        bg="#050E1E", sidebar="#08182C", card="#0F2440", elev="#15304F", plot="#081A2F",
-        blue="#4C8DFF", cyan="#38E0F0", green="#8FE04C",
-        text="#F2F6FB", muted="#A9BCD2", border="#26405C",
-        btn="#04122A", shadow="0 10px 28px rgba(0,0,0,.35)", glow="rgba(76,141,255,.22)",
-        rain="#123A66", dry="#12371F", scale0="#081A2F", tpl="plotly_dark",
+        bg="#050E1E", sidebar="rgba(10,26,48,0.72)", card="rgba(20,44,74,0.55)", elev="rgba(28,56,92,0.65)",
+        plot="#0A1F38", blue="#4C8DFF", cyan="#38E0F0", green="#8FE04C",
+        text="#F2F6FB", muted="#A9BCD2", border="rgba(140,180,240,0.18)",
+        btn="#04122A", shadow="0 12px 40px rgba(0,0,0,0.45)", glow="rgba(76,141,255,0.25)",
+        rain="rgba(20,60,110,0.55)", dry="rgba(20,70,40,0.55)", scale0="#081A2F", tpl="plotly_dark",
         warm="#F5A524", grad_a="#4C8DFF", grad_b="#38E0F0",
+        glass_hi="rgba(255,255,255,0.10)", glass_lo="rgba(255,255,255,0.02)",
+        mesh1="rgba(76,141,255,0.30)", mesh2="rgba(56,224,240,0.22)", mesh3="rgba(143,224,76,0.14)",
     ),
     "light": dict(
-        bg="#EEF3F9", sidebar="#FFFFFF", card="#FFFFFF", elev="#E4ECF6", plot="#FFFFFF",
-        blue="#1D4ED8", cyan="#0E7490", green="#3F6212",
-        text="#0B2545", muted="#42566E", border="#CBD8E6",
-        btn="#FFFFFF", shadow="0 8px 22px rgba(11,37,69,.10)", glow="rgba(29,78,216,.16)",
-        rain="#DCE9FB", dry="#E6F1DA", scale0="#E4ECF6", tpl="plotly_white",
+        bg="#E8EFF8", sidebar="rgba(255,255,255,0.72)", card="rgba(255,255,255,0.72)", elev="rgba(240,246,255,0.85)",
+        plot="#FFFFFF", blue="#1D4ED8", cyan="#0E7490", green="#3F6212",
+        text="#0B2545", muted="#42566E", border="rgba(29,78,216,0.16)",
+        btn="#FFFFFF", shadow="0 12px 40px rgba(11,37,69,0.12)", glow="rgba(29,78,216,0.22)",
+        rain="rgba(220,233,251,0.80)", dry="rgba(230,241,218,0.80)", scale0="#E4ECF6", tpl="plotly_white",
         warm="#B45309", grad_a="#1D4ED8", grad_b="#0E7490",
+        glass_hi="rgba(255,255,255,0.85)", glass_lo="rgba(255,255,255,0.45)",
+        mesh1="rgba(29,78,216,0.18)", mesh2="rgba(14,116,144,0.16)", mesh3="rgba(63,98,18,0.10)",
     ),
 }
 
@@ -167,27 +171,70 @@ def native_theme():
     return "dark" if st.get_option("theme.base") == "dark" else "light"
 
 
+# ======================================================================
+#  GLASSMORPHISM + NEUMORPHISM DESIGN SYSTEM
+# ======================================================================
 STATIC_CSS = r"""
 html, body, .stApp { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
-html { scroll-padding-top: 5.5rem; }
+
+/* ---- GLOBAL PAGE: mesh gradient + full coverage, no dark gaps anywhere ---- */
+html, body {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+    min-height: 100%;
+}
+.stApp,
+[data-testid="stApp"],
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > div,
+[data-testid="stAppViewContainer"] > .main,
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+section.main,
+.main,
+.main > div {
+    background-color: transparent !important;
+    color: var(--text) !important;
+    overflow: visible !important;
+    min-height: 100vh;
+}
+/* the mesh gradient behind the whole app — two layers, one fixed to viewport */
 .stApp {
-    background: radial-gradient(1000px 460px at 88% -10%, var(--glow), transparent), var(--bg) !important;
-    color: var(--text); overflow: visible !important; min-height: 100vh;
+    background-image:
+        radial-gradient(900px 520px at 12% -8%, var(--mesh1), transparent 60%),
+        radial-gradient(800px 500px at 92% 4%, var(--mesh2), transparent 60%),
+        radial-gradient(900px 600px at 50% 108%, var(--mesh3), transparent 65%),
+        linear-gradient(180deg, var(--bg), var(--bg)) !important;
+    background-attachment: fixed, fixed, fixed, fixed !important;
+    overflow: visible !important;
 }
-[data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
-    background: transparent !important; color: var(--text);
-    overflow: visible !important; height: auto !important;
-}
+
+html { scroll-padding-top: 4.5rem; }
 [data-testid="stHeader"], .stAppHeader, header {
-    background: transparent !important; box-shadow: none !important; border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
 }
 [data-testid="stHeader"] * { color: var(--text) !important; }
 [data-testid="stDecoration"], [data-testid="stAppDeployButton"], .stDeployButton, #MainMenu, footer { display: none !important; }
+
+/* ---- NO TOP GAP: block container starts almost at the top ---- */
 .block-container {
-    padding: 5.4rem 1.8rem 3rem !important; max-width: 1400px !important;
-    overflow: visible !important; height: auto !important;
+    padding: 1.2rem 1.8rem 2.5rem !important;
+    max-width: 1400px !important;
+    overflow: visible !important;
+    height: auto !important;
+    background: transparent !important;
 }
-.stApp :is(h1,h2,h3,h4,h5,h6,[id]) { scroll-margin-top: 5.5rem; }
+.stApp :is(h1,h2,h3,h4,h5,h6,[id]) { scroll-margin-top: 4.5rem; }
+
+/* ---- GLASS SURFACE (reused by every card) ---- */
+:root {
+    --glass-shadow: var(--shadow);
+    --glass-blur: blur(18px) saturate(160%);
+}
+
+/* ---- TEXT INHERITANCE ---- */
 .stApp :is(h1,h2,h3,h4,h5,h6,p,li,label,span,div,small,td,th,summary,input,textarea,button) { color: inherit; }
 .stApp :is(h1,h2,h3,h4,p,li,label,span,div) { overflow-wrap: anywhere; }
 .stApp :is(h1,h2,h3,h4) {
@@ -199,145 +246,282 @@ html { scroll-padding-top: 5.5rem; }
 .stApp a { color: var(--blue); text-decoration: none; }
 .stApp a:hover { text-decoration: underline; }
 [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"], [data-testid="stMarkdownContainer"], .stElementContainer { overflow: visible !important; }
+
+/* ---- SIDEBAR: frosted glass panel ---- */
 section[data-testid="stSidebar"] {
-    background: var(--sidebar) !important; border-right: 1px solid var(--border); color: var(--text);
+    background: var(--sidebar) !important;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-right: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: 8px 0 32px rgba(0,0,0,0.06);
 }
 section[data-testid="stSidebar"] > div, [data-testid="stSidebarContent"] { background: transparent !important; }
-.stApp .brand { padding: 6px 2px 16px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
-.stApp .brand-kicker { color: var(--blue); font-size: .68rem; letter-spacing: .18em; font-weight: 700; text-transform: uppercase; }
-.stApp .brand-name { color: var(--text); font-size: 1.35rem; font-weight: 800; margin-top: 6px; line-height: 1.25; letter-spacing: -.01em; }
+.stApp .brand {
+    padding: 14px 16px 16px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 24px rgba(0,0,0,0.06);
+    margin-bottom: 18px;
+}
+.stApp .brand-kicker { color: var(--blue); font-size: .68rem; letter-spacing: .18em; font-weight: 800; text-transform: uppercase; }
+.stApp .brand-name { color: var(--text); font-size: 1.4rem; font-weight: 800; margin-top: 6px; line-height: 1.25; letter-spacing: -.01em; }
 .stApp .brand-sub { color: var(--muted); font-size: .82rem; margin-top: 4px; font-weight: 500; }
+
+/* radio pills — glassmorphism */
 :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]) {
-    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--border); border-radius: 12px;
     padding: 7px 14px; margin: 2px 6px 2px 0; cursor: pointer;
-    transition: background-color .15s, border-color .15s, color .15s;
+    transition: all .2s ease;
     color: var(--text); font-weight: 500;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 6px rgba(0,0,0,0.04);
 }
 :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]) > div:not(:has([data-testid="stMarkdownContainer"])),
 label[data-testid="stRadioOption"] > div > div:first-child:not([data-testid="stMarkdownContainer"]) { display: none; }
-:is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]):hover { border-color: var(--blue); }
+:is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]):hover { border-color: var(--blue); transform: translateY(-1px); }
 :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]):has(input:checked) {
-    background: var(--blue); border-color: var(--blue); color: #FFFFFF; font-weight: 600;
+    background: linear-gradient(135deg, var(--blue), var(--cyan)); border-color: transparent;
+    color: #FFFFFF; font-weight: 700;
+    box-shadow: 0 6px 20px var(--glow), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]):has(input:focus-visible) { outline: 2px solid var(--cyan); outline-offset: 2px; }
 section[data-testid="stSidebar"] [role="radiogroup"], section[data-testid="stSidebar"] [role="radiogroup"] > div { width: 100%; }
 section[data-testid="stSidebar"] :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]) {
-    display: flex; align-items: center; width: 100%; margin: 6px 0; min-height: 44px; padding: 10px 14px; font-size: .95rem;
+    display: flex; align-items: center; width: 100%; margin: 6px 0; min-height: 46px; padding: 11px 16px; font-size: .95rem;
 }
 section[data-testid="stSidebar"] :is(label[data-baseweb="radio"], label[data-testid="stRadioOption"]):has(input:checked) {
-    background: var(--elev); border-color: var(--blue); color: var(--text); box-shadow: inset 4px 0 0 var(--blue); font-weight: 600;
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    border-color: var(--blue); color: var(--text);
+    box-shadow: inset 4px 0 0 var(--blue), inset 0 1px 0 rgba(255,255,255,0.15), 0 6px 24px var(--glow);
+    font-weight: 700;
 }
+
+/* ---- HERO HEADER (no top whitespace) ---- */
 .stApp .hero {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px) auto;
-    align-items: center; gap: 24px 28px; margin: 0 0 4px; position: relative; z-index: 2;
+    align-items: center; gap: 20px 24px; margin: 0 0 4px; position: relative; z-index: 2;
+    padding: 22px 26px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), var(--shadow);
 }
 .stApp .hero-copy { min-width: 0; }
 .stApp .brand-title {
-    font-size: 2.6rem; font-weight: 800; line-height: 1.12; letter-spacing: -.025em; margin: 0 0 8px;
+    font-size: 2.8rem; font-weight: 800; line-height: 1.08; letter-spacing: -.028em; margin: 0 0 10px;
     color: var(--blue);
     background: linear-gradient(90deg, var(--grad_a) 0%, var(--grad_b) 100%);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    display: inline-block; padding-bottom: 2px;
+    display: inline-block; padding-bottom: 4px;
 }
 @supports not (-webkit-background-clip: text) {
     .stApp .brand-title { color: var(--blue); -webkit-text-fill-color: currentColor; }
 }
-.stApp .brand-tagline { color: var(--text); font-size: 1.02rem; font-weight: 500; margin: 0 0 12px; line-height: 1.5; }
+.stApp .brand-tagline { color: var(--text); font-size: 1.05rem; font-weight: 500; margin: 0 0 14px; line-height: 1.5; }
 .stApp .brand-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    color: var(--text); background: var(--card); border: 1px solid var(--border);
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text); background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    border: 1px solid var(--border);
     font-size: .74rem; font-weight: 700; letter-spacing: .10em; text-transform: uppercase;
-    padding: 6px 12px; border-radius: 999px; line-height: 1.2;
+    padding: 7px 14px; border-radius: 999px; line-height: 1.2;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
 }
 .stApp .brand-badge::before {
-    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px var(--glow);
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 0 4px var(--glow);
+    animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 4px var(--glow); }
+    50%     { box-shadow: 0 0 0 7px transparent; }
 }
 .stApp .hero-art { display: flex; justify-content: center; align-items: center; }
 .stApp .hero-art svg { width: 100%; max-width: 320px; height: auto; display: block; }
 .stApp .hero-toggle { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; min-width: 220px; }
 .stApp .theme-label { color: var(--muted); font-size: .72rem; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; text-align: right; }
-.rule { height: 2px; margin: 18px 0 22px; border-radius: 2px; background: linear-gradient(90deg, var(--blue), var(--cyan) 40%, transparent); }
+.rule { height: 1px; margin: 16px 0 18px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent); }
 @media (max-width: 1100px) {
     .stApp .hero { grid-template-columns: minmax(0, 1fr) auto; }
     .stApp .hero-art { display: none; }
 }
 @media (max-width: 760px) {
-    .stApp .hero { grid-template-columns: 1fr; }
+    .stApp .hero { grid-template-columns: 1fr; padding: 18px; }
     .stApp .hero-toggle { align-items: flex-start; min-width: 0; }
     .stApp .theme-label { text-align: left; }
-    .stApp .brand-title { font-size: 2rem; }
+    .stApp .brand-title { font-size: 2.1rem; }
 }
+
+/* ---- KPI CARDS: glass + top accent line ---- */
 .kpi-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 6px 0 22px; }
 .kpi {
-    position: relative; background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px 18px 16px; min-height: 132px;
-    box-shadow: var(--shadow); transition: border-color .15s, box-shadow .15s;
+    position: relative;
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border); border-radius: 18px;
+    padding: 22px 20px 18px; min-height: 140px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), var(--shadow);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    overflow: hidden;
 }
-.kpi::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; border-radius: 14px 14px 0 0; background: var(--blue); }
-.kpi:nth-child(2)::before { background: var(--cyan); }
-.kpi:nth-child(3)::before { background: var(--green); }
-.kpi:nth-child(4)::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
-.kpi:hover { border-color: var(--blue); box-shadow: 0 0 0 3px var(--glow), var(--shadow); }
-.stApp .kpi-top { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1.4; }
-.stApp .kpi-value { color: var(--blue); font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important; font-size: 1.7rem; font-weight: 700; margin: 10px 0 6px; line-height: 1.2; }
+.kpi::before {
+    content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+.kpi:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan), var(--green)); }
+.kpi:nth-child(3)::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.kpi:nth-child(4)::before { background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+.kpi:hover {
+    transform: translateY(-3px);
+    border-color: var(--blue);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 20px 48px var(--glow);
+}
+.stApp .kpi-top { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; line-height: 1.4; }
+.stApp .kpi-value { color: var(--blue); font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important; font-size: 1.85rem; font-weight: 700; margin: 12px 0 6px; line-height: 1.2; }
 .stApp .kpi-hint { color: var(--muted); font-size: .82rem; line-height: 1.5; font-weight: 400; }
 @media (max-width: 980px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .kpi-row { grid-template-columns: 1fr; } }
-.stApp .sec-h { color: var(--text); font-size: 1.28rem; font-weight: 700; margin: 6px 0 8px; line-height: 1.3; }
+
+/* ---- SECTIONS ---- */
+.stApp .sec-h { color: var(--text); font-size: 1.3rem; font-weight: 700; margin: 6px 0 8px; line-height: 1.3; }
 .stApp .caption { color: var(--muted); font-size: .88rem; margin: 0 0 14px; line-height: 1.55; font-weight: 400; }
-.stApp .sec-label { color: var(--blue); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.stApp .sec-label { color: var(--blue); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; margin: 18px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* ---- INFO GRID ---- */
 .info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 12px 0 16px; }
-.info-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
-.stApp .info-card h4 { color: var(--text); margin: 0 0 8px; font-size: 1rem; font-weight: 700; }
+.info-card {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border); border-radius: 18px; padding: 22px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), var(--shadow);
+    transition: transform .2s ease, border-color .2s ease;
+}
+.info-card:hover { transform: translateY(-2px); border-color: var(--blue); }
+.stApp .info-card h4 { color: var(--text); margin: 0 0 10px; font-size: 1.02rem; font-weight: 700; }
 .stApp .info-card p { color: var(--muted); margin: 0; font-size: .9rem; line-height: 1.6; font-weight: 400; }
 @media (max-width: 800px) { .info-grid { grid-template-columns: 1fr; } }
+
+/* ---- FLOW / RESULT ---- */
 .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 16px; }
-.stApp .flow-step { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 14px; font-size: .85rem; font-weight: 600; }
-.stApp .flow-step.accent { border-color: var(--blue); color: var(--blue); }
+.stApp .flow-step {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border); color: var(--text); border-radius: 12px;
+    padding: 9px 16px; font-size: .86rem; font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.stApp .flow-step.accent { border-color: var(--blue); color: var(--blue); background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #fff; }
 .stApp .flow-arrow { color: var(--cyan); font-weight: 800; }
-.result { display: flex; gap: 20px; align-items: center; border-radius: 14px; padding: 20px 24px; margin: 16px 0 12px; border: 1px solid var(--border); background: var(--card); box-shadow: var(--shadow); }
-.result.rain { background: var(--rain); border-color: var(--blue); }
-.result.dry { background: var(--dry); border-color: var(--green); }
-.stApp .result h2 { color: var(--text); margin: 0 0 6px; font-size: 1.35rem; font-weight: 700; border: 0; padding: 0; }
+.result {
+    display: flex; gap: 22px; align-items: center; border-radius: 20px;
+    padding: 24px 26px; margin: 16px 0 12px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), var(--shadow);
+}
+.result.rain { background: linear-gradient(135deg, var(--rain), var(--glass_lo)); border-color: var(--blue); }
+.result.dry  { background: linear-gradient(135deg, var(--dry), var(--glass_lo)); border-color: var(--green); }
+.stApp .result h2 { color: var(--text); margin: 0 0 6px; font-size: 1.4rem; font-weight: 800; border: 0; padding: 0; }
 .stApp .result p { color: var(--muted); margin: 0; font-size: .95rem; line-height: 1.5; }
 .stApp .foot { color: var(--muted); font-size: .82rem; text-align: center; margin-top: 34px; padding-top: 14px; border-top: 1px solid var(--border); line-height: 1.6; }
+
+/* ---- BUTTONS: gradient + glass ---- */
 .stButton > button, .stDownloadButton > button, [data-testid="stFormSubmitButton"] > button {
-    background: var(--blue) !important; border: 1px solid var(--blue) !important; border-radius: 10px !important;
-    padding: .68rem 1.15rem !important; color: #FFFFFF !important; font-weight: 700 !important; font-size: .92rem !important;
-    transition: filter .15s, box-shadow .15s;
+    background: linear-gradient(135deg, var(--blue), var(--cyan)) !important;
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+    padding: .72rem 1.25rem !important;
+    color: #FFFFFF !important; font-weight: 700 !important; font-size: .92rem !important;
+    transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 20px var(--glow);
 }
 .stButton > button *, .stDownloadButton > button *, [data-testid="stFormSubmitButton"] > button * { color: #FFFFFF !important; }
-.stButton > button:hover, .stDownloadButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover { filter: brightness(1.08); box-shadow: 0 0 0 3px var(--glow); }
+.stButton > button:hover, .stDownloadButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover {
+    filter: brightness(1.08); transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 12px 32px var(--glow);
+}
 .stButton > button:focus-visible, .stDownloadButton > button:focus-visible, [data-testid="stFormSubmitButton"] > button:focus-visible { outline: 2px solid var(--cyan) !important; outline-offset: 2px; }
-section[data-testid="stSidebar"] .stButton > button { background: var(--card) !important; border-color: var(--border) !important; }
+section[data-testid="stSidebar"] .stButton > button {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo)) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
 section[data-testid="stSidebar"] .stButton > button * { color: var(--text) !important; }
+
+/* ---- INPUTS: neumorphic inset ---- */
 :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"], [data-testid="stNumberInput"], [data-testid="stTextInput"]) > div > div,
-[data-baseweb="select"] > div, [data-baseweb="input"], [data-baseweb="base-input"] { background: var(--elev) !important; border-color: var(--border) !important; border-radius: 10px !important; }
+[data-baseweb="select"] > div, [data-baseweb="input"], [data-baseweb="base-input"] {
+    background: var(--elev) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
 :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"], [data-testid="stNumberInput"]) input,
 [data-baseweb="select"] *, [data-baseweb="input"] input { color: var(--text) !important; -webkit-text-fill-color: var(--text); font-weight: 500; }
 [data-testid="stNumberInput"] button { background: var(--elev) !important; color: var(--text) !important; }
-:is([data-testid="stSelectbox"], [data-testid="stMultiSelect"], [data-testid="stNumberInput"]):focus-within > div > div { border-color: var(--blue) !important; }
+:is([data-testid="stSelectbox"], [data-testid="stMultiSelect"], [data-testid="stNumberInput"]):focus-within > div > div { border-color: var(--blue) !important; box-shadow: 0 0 0 3px var(--glow); }
 .stApp :is([data-testid="stWidgetLabel"], [data-testid="stWidgetLabel"] *) { color: var(--text) !important; font-size: .88rem; font-weight: 600; }
-[data-baseweb="popover"], [data-baseweb="menu"], [data-baseweb="popover"] ul, div[role="listbox"] { background: var(--card) !important; border: 1px solid var(--border) !important; }
+[data-baseweb="popover"], [data-baseweb="menu"], [data-baseweb="popover"] ul, div[role="listbox"] {
+    background: var(--sidebar) !important;
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow);
+}
 [data-baseweb="popover"] li, [data-baseweb="popover"] li *, div[role="option"], div[role="option"] * { color: var(--text) !important; }
-[data-baseweb="tag"], [data-testid="stMultiSelectTagsContainer"] span { background-color: var(--blue) !important; border-radius: 8px !important; }
-[data-baseweb="tag"], [data-baseweb="tag"] *, [data-testid="stMultiSelectTagsContainer"] span,
-[data-testid="stMultiSelectTagsContainer"] span * { color: #FFFFFF !important; font-weight: 600; }
-[data-testid="stTooltipContent"], [data-testid="stTooltipContent"] * { background: var(--card) !important; color: var(--text) !important; border: 1px solid var(--border) !important; }
+[data-baseweb="tag"], [data-testid="stMultiSelectTagsContainer"] span { background: linear-gradient(135deg, var(--blue), var(--cyan)) !important; border-radius: 10px !important; }
+[data-baseweb="tag"], [data-baseweb="tag"] *, [data-testid="stMultiSelectTagsContainer"] span, [data-testid="stMultiSelectTagsContainer"] span * { color: #FFFFFF !important; font-weight: 600; }
+[data-testid="stTooltipContent"], [data-testid="stTooltipContent"] * { background: var(--sidebar) !important; color: var(--text) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; }
+
+/* ---- FORM / EXPANDER / METRIC / ALERT / UPLOADER / TABLE ---- */
 [data-testid="stForm"] { border: 0 !important; padding: 0 !important; background: transparent !important; }
-[data-testid="stExpander"] details { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
-[data-testid="stExpander"] summary, [data-testid="stExpander"] details[open] > summary { background: transparent !important; border-radius: 12px; }
+[data-testid="stExpander"] details {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+[data-testid="stExpander"] summary, [data-testid="stExpander"] details[open] > summary { background: transparent !important; border-radius: 14px; }
 [data-testid="stExpander"] summary * { color: var(--text) !important; font-weight: 600; }
-[data-testid="stMetric"] { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+[data-testid="stMetric"] {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), var(--shadow);
+}
 [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] * { color: var(--muted) !important; font-weight: 600; }
 [data-testid="stMetricValue"], [data-testid="stMetricValue"] * { color: var(--blue) !important; font-family: "JetBrains Mono", ui-monospace, monospace !important; font-weight: 700; }
-[data-testid="stAlert"], [data-testid="stAlert"] > div { background: var(--elev) !important; border-radius: 12px; }
+[data-testid="stAlert"], [data-testid="stAlert"] > div {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo)) !important;
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+}
 [data-testid="stAlert"] * { color: var(--text) !important; }
-[data-testid="stFileUploaderDropzone"] { background: var(--card); border: 1px dashed var(--border); border-radius: 12px; }
+[data-testid="stFileUploaderDropzone"] {
+    background: linear-gradient(135deg, var(--glass_hi), var(--glass_lo));
+    backdrop-filter: var(--glass-blur);
+    border: 1.5px dashed var(--border); border-radius: 14px;
+}
 [data-testid="stFileUploaderDropzone"] * { color: var(--text) !important; }
-[data-testid="stFileUploaderDropzone"] button { background: var(--elev) !important; border: 1px solid var(--border) !important; }
-[data-testid="stDataFrame"] { border: 1px solid var(--border); border-radius: 10px; }
+[data-testid="stFileUploaderDropzone"] button { background: var(--elev) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; }
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
 hr { border-color: var(--border) !important; }
+
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 """
 
@@ -351,7 +535,8 @@ def inject_css(theme):
         "<style>"
         "@import url('https://fonts.googleapis.com/css2?"
         "family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');"
-        f":root,.stApp{{{roots}}}{STATIC_CSS}{fix}</style>",
+        f":root,html,body,.stApp{{{roots}}}"
+        f"{STATIC_CSS}{fix}</style>",
         unsafe_allow_html=True,
     )
 
@@ -363,51 +548,51 @@ def hero_svg(t):
 <svg viewBox="0 0 320 200" role="img" aria-label="Weather illustration">
   <defs>
     <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="{t['elev']}" stop-opacity="0.65"/>
+      <stop offset="0%" stop-color="{t['elev']}" stop-opacity="0.75"/>
       <stop offset="100%" stop-color="{t['elev']}" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="bellFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="{bell}" stop-opacity=".45"/>
+      <stop offset="0%" stop-color="{bell}" stop-opacity=".50"/>
       <stop offset="100%" stop-color="{bell}" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="320" height="200" rx="18" fill="url(#skyGrad)"/>
+  <rect x="0" y="0" width="320" height="200" rx="22" fill="url(#skyGrad)"/>
   <path d="M10 150 C 60 150, 70 60, 105 60 C 140 60, 150 150, 200 150"
-        fill="url(#bellFill)" stroke="{bell}" stroke-width="2" opacity=".75"/>
+        fill="url(#bellFill)" stroke="{bell}" stroke-width="2.2" opacity=".85"/>
   <line x1="10" y1="150" x2="200" y2="150" stroke="{line}" stroke-width="1" opacity=".55"/>
-  <g opacity=".85">
-    <rect x="212" y="118" width="14" height="32" rx="3" fill="{bar}"/>
-    <rect x="232" y="102" width="14" height="48" rx="3" fill="{bar}"/>
-    <rect x="252" y="130" width="14" height="20" rx="3" fill="{bar}"/>
-    <rect x="272" y="112" width="14" height="38" rx="3" fill="{bar}"/>
+  <g opacity=".9">
+    <rect x="212" y="118" width="14" height="32" rx="4" fill="{bar}"/>
+    <rect x="232" y="102" width="14" height="48" rx="4" fill="{bar}"/>
+    <rect x="252" y="130" width="14" height="20" rx="4" fill="{bar}"/>
+    <rect x="272" y="112" width="14" height="38" rx="4" fill="{bar}"/>
   </g>
   <g class="wx-sun" style="transform-origin:230px 62px">
-    <circle cx="230" cy="62" r="18" fill="{sun}" opacity=".9"/>
-    <g stroke="{sun}" stroke-width="2.2" stroke-linecap="round" opacity=".85">
-      <line x1="230" y1="30" x2="230" y2="38"/>
-      <line x1="230" y1="86" x2="230" y2="94"/>
-      <line x1="198" y1="62" x2="206" y2="62"/>
-      <line x1="254" y1="62" x2="262" y2="62"/>
-      <line x1="207" y1="39" x2="213" y2="45"/>
-      <line x1="247" y1="79" x2="253" y2="85"/>
-      <line x1="253" y1="39" x2="247" y2="45"/>
-      <line x1="213" y1="79" x2="207" y2="85"/>
+    <circle cx="230" cy="62" r="19" fill="{sun}" opacity=".95"/>
+    <g stroke="{sun}" stroke-width="2.4" stroke-linecap="round" opacity=".9">
+      <line x1="230" y1="28" x2="230" y2="37"/>
+      <line x1="230" y1="87" x2="230" y2="96"/>
+      <line x1="196" y1="62" x2="205" y2="62"/>
+      <line x1="255" y1="62" x2="264" y2="62"/>
+      <line x1="205" y1="37" x2="212" y2="44"/>
+      <line x1="248" y1="80" x2="255" y2="87"/>
+      <line x1="255" y1="37" x2="248" y2="44"/>
+      <line x1="212" y1="80" x2="205" y2="87"/>
     </g>
   </g>
   <g class="wx-cloud">
     <path d="M92 118 a24 24 0 0 1 4 -46 a30 30 0 0 1 56 8 a20 20 0 0 1 -6 38 z"
           fill="{cloud}" opacity=".95"/>
   </g>
-  <g stroke="{drop}" stroke-width="2.4" stroke-linecap="round">
+  <g stroke="{drop}" stroke-width="2.6" stroke-linecap="round">
     <line class="wx-drop" x1="106" y1="126" x2="104" y2="136"/>
     <line class="wx-drop" x1="122" y1="126" x2="120" y2="136"/>
     <line class="wx-drop" x1="138" y1="126" x2="136" y2="136"/>
     <line class="wx-drop" x1="154" y1="126" x2="152" y2="136"/>
   </g>
   <g transform="translate(48,108)">
-    <path d="M0 26 a28 20 0 0 1 56 0 z" fill="{umb}" opacity=".9"/>
-    <line x1="28" y1="26" x2="28" y2="48" stroke="{umb}" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M28 48 a6 6 0 0 0 12 0" fill="none" stroke="{umb}" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M0 26 a28 20 0 0 1 56 0 z" fill="{umb}" opacity=".92"/>
+    <line x1="28" y1="26" x2="28" y2="48" stroke="{umb}" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M28 48 a6 6 0 0 0 12 0" fill="none" stroke="{umb}" stroke-width="2.6" stroke-linecap="round"/>
   </g>
 </svg>
 """
@@ -416,11 +601,11 @@ def hero_svg(t):
 CSS_ANIM = """
 <style>
 @keyframes wx-spin  { to { transform: rotate(360deg); } }
-@keyframes wx-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes wx-drip  { 0% { opacity: 0; transform: translateY(-3px); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
-.stApp .hero-art .wx-sun   { animation: wx-spin 22s linear infinite; }
-.stApp .hero-art .wx-cloud { animation: wx-float 5s ease-in-out infinite; }
-.stApp .hero-art .wx-drop  { animation: wx-drip 1.9s ease-in infinite; }
+@keyframes wx-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes wx-drip  { 0% { opacity: 0; transform: translateY(-3px); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(12px); } }
+.stApp .hero-art .wx-sun   { animation: wx-spin 24s linear infinite; }
+.stApp .hero-art .wx-cloud { animation: wx-float 5.5s ease-in-out infinite; }
+.stApp .hero-art .wx-drop  { animation: wx-drip 2s ease-in infinite; }
 .stApp .hero-art .wx-drop:nth-of-type(2) { animation-delay: .35s; }
 .stApp .hero-art .wx-drop:nth-of-type(3) { animation-delay: .70s; }
 .stApp .hero-art .wx-drop:nth-of-type(4) { animation-delay: 1.05s; }
@@ -456,17 +641,17 @@ def style_fig(fig, theme, h=390):
     ax = dict(gridcolor=t["border"], zeroline=False, linecolor=t["border"],
               tickfont=dict(color=t["muted"], size=12), title_font=dict(color=t["text"], size=13))
     fig.update_layout(
-        template=t["tpl"], paper_bgcolor=t["plot"], plot_bgcolor=t["plot"],
+        template=t["tpl"], paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         height=h, margin=dict(l=52, r=24, t=62, b=48),
         font=dict(family="Inter, 'Segoe UI', system-ui, sans-serif", color=t["text"], size=12.5),
         title=dict(font=dict(color=t["text"], size=15.5), x=0.01, xanchor="left"),
-        legend=dict(bgcolor=t["card"], bordercolor=t["border"], borderwidth=1, font=dict(color=t["text"], size=12)),
+        legend=dict(bgcolor="rgba(0,0,0,0)", bordercolor=t["border"], borderwidth=1, font=dict(color=t["text"], size=12)),
         colorway=[t["cyan"], t["blue"], t["green"], t["warm"]],
     )
     fig.update_xaxes(**ax)
     fig.update_yaxes(**ax)
     fig.update_coloraxes(colorbar=dict(outlinecolor=t["border"], tickfont=dict(color=t["text"])))
-    fig.update_traces(hoverlabel=dict(bgcolor=t["card"], font_color=t["text"], bordercolor=t["border"]))
+    fig.update_traces(hoverlabel=dict(bgcolor=t["sidebar"], font_color=t["text"], bordercolor=t["border"]))
     return fig
 
 
@@ -511,9 +696,9 @@ def render_chrome():
     t = THEMES[theme_key()]
     st.markdown(CSS_ANIM, unsafe_allow_html=True)
     if _has_va():
-        left, right = st.columns([4.0, 1.2], vertical_alignment="center")
+        left, right = st.columns([4.2, 1.2], vertical_alignment="center")
     else:
-        left, right = st.columns([4.0, 1.2])
+        left, right = st.columns([4.2, 1.2])
     with left:
         st.markdown(
             f'<div class="hero">'
@@ -547,7 +732,7 @@ def page_overview(theme, train, n_test, y, p):
     for col, title, vals in ((c1, "Training data: what actually happened", [tr.get("No", 0), tr.get("Yes", 0)]),
                              (c2, "Test data: what the model predicts", [int((p == 0).sum()), int((p == 1).sum())])):
         fig = go.Figure(go.Pie(labels=["No rain", "Rain"], values=vals, hole=.62, sort=False, textinfo="percent",
-                               marker=dict(colors=[t["cyan"], t["blue"]], line=dict(color=t["plot"], width=2))))
+                               marker=dict(colors=[t["cyan"], t["blue"]], line=dict(color="rgba(0,0,0,0)", width=0))))
         fig.update_layout(title=title, legend=dict(orientation="h", y=-0.08))
         with col:
             show_fig(fig, theme, 340)
@@ -642,7 +827,7 @@ def build_analytics(months, locs, cls, theme):
     cnt = df["RainTomorrow"].value_counts().rename_axis("RainTomorrow").reset_index(name="Count")
     cnt["Share"] = (cnt["Count"] / cnt["Count"].sum() * 100).round(1)
     fig = go.Figure(go.Pie(labels=cnt["RainTomorrow"].map({"Yes": "Rain", "No": "No rain"}), values=cnt["Count"], hole=.58,
-                           marker=dict(colors=[cmap[v] for v in cnt["RainTomorrow"]], line=dict(color=t["plot"], width=2)),
+                           marker=dict(colors=[cmap[v] for v in cnt["RainTomorrow"]], line=dict(color="rgba(0,0,0,0)", width=0)),
                            textinfo="label+percent", textfont=dict(color=t["text"]),
                            hovertemplate="%{label}<br>%{value:,} days (%{percent})<extra></extra>"))
     fig.update_layout(title="Rain distribution: rainy vs non-rainy next days", showlegend=False)
